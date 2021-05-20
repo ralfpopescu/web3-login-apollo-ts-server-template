@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const { accessTokenSecret } = '123';
+const accessTokenSecret = '123';
 
 const salt = bcrypt.genSaltSync(10);
 

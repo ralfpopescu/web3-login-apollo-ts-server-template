@@ -17,6 +17,10 @@ const UserSchema = new Schema(
             unique: true,
             required: true,
         },
+        hashedPassword: {
+            type: String,
+            required: true,
+        },
         wallet: {
             type: String,
         },
