@@ -21,12 +21,6 @@ const UserSchema = new Schema(
             type: String,
             required: true,
         },
-        wallet: {
-            type: String,
-        },
-        blizzardAccessToken: {
-            type: String,
-        }
     },
     {
         collection: 'users',

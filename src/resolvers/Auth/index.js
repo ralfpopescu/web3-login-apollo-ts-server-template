@@ -7,14 +7,13 @@ const salt = bcrypt.genSaltSync(10);
 
 const validateUser = async ({ email, password, Model }) => {
   const user = await Model.User.findOne({ email }).exec();
-  console.log('dauser', user);
+
   if (!user) {
     throw new Error('User with email does not exist.');
   }
   const { hashedPassword, id } = user;
-  console.log('hashedPassword, id', hashedPassword, id);
   const result = bcrypt.compareSync(password, hashedPassword);
-  console.log('resdultresult', result);
+  
   if (result) {
     return id;
   }
