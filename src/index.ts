@@ -1,5 +1,5 @@
-const getApp = require('./services/get-app')
-const setupServer = require('./services/setup-server')
+import { getApp } from './services/get-app';
+import { setupServer } from './services/setup-server';
 
 const setup = async () => {
   console.log('Setting up server...');

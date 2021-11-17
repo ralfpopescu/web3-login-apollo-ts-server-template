@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-db": "docker-compose -f ./src/docker/compose/docker-compose.blizz-start.yaml -p blizz up --force-recreate blizzdb",
-    "remove-volume": "docker-compose -f ./src/docker/compose/docker-compose.blizz-start.yaml down",
+    "build": "tsc",
+    "start-db": "docker-compose -f ./src/docker/compose/docker-compose.db-start.yaml -p project up --force-recreate db",
+    "remove-volume": "docker-compose -f ./src/docker/compose/docker-compose.db.yaml down",
     "start": "node src/bin/www"
   },
   "author": "",
@@ -17,6 +18,7 @@
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "graphql": "^15.5.0",
     "graphql-compose-mongoose": "^9.3.1",
@@ -27,5 +29,12 @@
     "passport": "^0.4.1",
     "passport-bnet": "^2.0.0",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/node": "^16.11.7",
+    "@types/uuid": "^8.3.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
   }
 }

@@ -1,12 +1,12 @@
-const debug = (message, metadata) => {
-  console.log(message);
-  //console.log(JSON.stringify(metadata));
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.logger = void 0;
+var debug = function (message, metadata) {
+    console.log(message, JSON.stringify(metadata));
 };
-
-const error = (message, metadata, e) => {
-  console.log(message);
-  console.log(JSON.stringify(metadata));
-  console.log(e);
+var error = function (message, metadata, e) {
+    console.log(message);
+    console.log(JSON.stringify(metadata));
+    console.log(e);
 };
-
-module.exports = { debug, error };
+exports.logger = { debug: debug, error: error };
