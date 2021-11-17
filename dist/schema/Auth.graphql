@@ -1,0 +1,18 @@
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input SignupInput {
+  email: String!
+  password: String!
+}
+
+type LoginResponse {
+  accessToken: String!
+}
+
+extend type Mutation {
+  login(input: LoginInput!): LoginResponse
+  signup(input: SignupInput!): User
+}

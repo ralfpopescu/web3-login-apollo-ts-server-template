@@ -41,7 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var bcryptjs_1 = __importDefault(require("bcryptjs"));
-var accessTokenSecret = '123';
+var config_1 = require("../../config");
 var salt = bcryptjs_1.default.genSaltSync(10);
 var validateUser = function (_a) {
     var email = _a.email, password = _a.password, Model = _a.Model;
@@ -53,14 +53,14 @@ var validateUser = function (_a) {
                 case 1:
                     user = _b.sent();
                     if (!user) {
-                        throw new Error('User with email does not exist.');
+                        throw new Error("User with email does not exist.");
                     }
                     hashedPassword = user.hashedPassword, id = user.id;
                     result = bcryptjs_1.default.compareSync(password, hashedPassword);
                     if (result) {
                         return [2 /*return*/, id];
                     }
-                    throw new Error('Login failed');
+                    throw new Error("Login failed");
             }
         });
     });
@@ -77,7 +77,7 @@ var Mutation = {
                     case 1:
                         id = _d.sent();
                         if (id) {
-                            accessToken = jsonwebtoken_1.default.sign({ email: email, id: id }, accessTokenSecret);
+                            accessToken = jsonwebtoken_1.default.sign({ email: email, id: id }, config_1.config.ACCESS_TOKEN_SECRET);
                             return [2 /*return*/, { accessToken: accessToken }];
                         }
                         return [2 /*return*/];
