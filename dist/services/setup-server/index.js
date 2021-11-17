@@ -41,17 +41,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.setupServer = void 0;
-var _a = require('apollo-server-express'), ApolloServer = _a.ApolloServer, gql = _a.gql;
-var path = require('path');
-var uuidv4 = require('uuid').v4;
-var concatFiles = require('../fs').concatFiles;
-var resolvers = require('../../resolvers');
-var logger = require('../logger');
-var QueryLogger = require('../query-logger').QueryLogger;
-var processAuth = require('./process-auth');
-var Model = require('../../db');
-var getMongoose = require('../../db/get-mongoose');
-var typeDefs = gql(templateObject_1 || (templateObject_1 = __makeTemplateObject(["", ""], ["", ""])), concatFiles(path.resolve(__dirname, '../../schema')));
+var _a = require("apollo-server-express"), ApolloServer = _a.ApolloServer, gql = _a.gql;
+var path = require("path");
+var uuidv4 = require("uuid").v4;
+var concatFiles = require("../fs").concatFiles;
+var resolvers = require("../../resolvers");
+var logger = require("../logger");
+var QueryLogger = require("../query-logger").QueryLogger;
+var processAuth = require("./process-auth");
+var Model = require("../../db");
+var getMongoose = require("../../db/get-mongoose").getMongoose;
+var typeDefs = gql(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  ", "\n"], ["\n  ", "\n"])), concatFiles(path.resolve(__dirname, "../../schema")));
 var setupServer = function () { return __awaiter(void 0, void 0, void 0, function () {
     var mongoose, server;
     return __generator(this, function (_a) {
@@ -73,7 +73,7 @@ var setupServer = function () { return __awaiter(void 0, void 0, void 0, functio
                             return __generator(this, function (_b) {
                                 switch (_b.label) {
                                     case 0:
-                                        auth = req.headers.get('Authorization') || null;
+                                        auth = req.headers.get("Authorization") || null;
                                         return [4 /*yield*/, processAuth(auth)];
                                     case 1:
                                         authenticatedUser = _b.sent();

@@ -6,10 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "copy-schema": "copyfiles -E -f **/schema/*.graphql dist/schema",
-    "build": "tsc",
+    "build": "tsc && npm run copy-schema",
     "start-db": "docker-compose -f ./src/docker/compose/docker-compose.db-start.yaml -p project up --force-recreate db",
     "remove-volume": "docker-compose -f ./src/docker/compose/docker-compose.db.yaml down",
-    "start": "node dist/bin/www"
+    "start": "node dist/bin/www",
+    "build-start": "npm run build && npm run start"
   },
   "author": "",
   "license": "ISC",

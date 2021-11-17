@@ -1,8 +1,8 @@
 const os = require("os");
 const cluster = require("cluster");
 
-const logger = require("../services/logger");
-const setup = require("../");
+const {logger} = require("../services/logger");
+const {setup} = require("../");
 
 const port = process.env.PORT || 3002;
 
@@ -13,7 +13,8 @@ const startServer = async (onStart = () => {}) => {
   });
 };
 
-const clusterWorkerSize = os.cpus().length;
+const clusterWorkerSize = 1 || os.cpus().length;
+
 if (clusterWorkerSize > 1) {
   if (cluster.isMaster) {
     for (let i = 0; i < clusterWorkerSize; i += 1) {

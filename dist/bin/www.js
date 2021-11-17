@@ -37,8 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var os = require("os");
 var cluster = require("cluster");
-var logger = require("../services/logger");
-var setup = require("../");
+var logger = require("../services/logger").logger;
+var setup = require("../").setup;
 var port = process.env.PORT || 3002;
 var startServer = function (onStart) {
     if (onStart === void 0) { onStart = function () { }; }
@@ -57,7 +57,7 @@ var startServer = function (onStart) {
         });
     });
 };
-var clusterWorkerSize = os.cpus().length;
+var clusterWorkerSize = 1 || os.cpus().length;
 if (clusterWorkerSize > 1) {
     if (cluster.isMaster) {
         for (var i = 0; i < clusterWorkerSize; i += 1) {

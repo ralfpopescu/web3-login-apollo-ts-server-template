@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.setup = void 0;
 var get_app_1 = require("./services/get-app");
 var setup_server_1 = require("./services/setup-server");
 var setup = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -43,7 +44,7 @@ var setup = function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log('Setting up server...');
+                console.log("Setting up server...");
                 app = (0, get_app_1.getApp)();
                 return [4 /*yield*/, (0, setup_server_1.setupServer)()];
             case 1:
@@ -55,4 +56,4 @@ var setup = function () { return __awaiter(void 0, void 0, void 0, function () {
         }
     });
 }); };
-module.exports = setup;
+exports.setup = setup;
