@@ -8,6 +8,6 @@ const error = (message: string, metadata: object, e?: Error) => {
   console.log(e);
 };
 
-export type Logger = { debug: typeof debug, error: typeof error }
+export type Logger = {debug: typeof debug; error: typeof error};
 
-export const logger = { debug, error }
+export const logger = {debug, error};
