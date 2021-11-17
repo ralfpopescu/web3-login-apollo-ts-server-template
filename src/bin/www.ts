@@ -1,12 +1,12 @@
-const os = require('os');
-const cluster = require('cluster');
+const os = require("os");
+const cluster = require("cluster");
 
-const logger = require('../services/logger');
-const setup = require('../');
+const logger = require("../services/logger");
+const setup = require("../");
 
 const port = process.env.PORT || 3002;
 
-const startServer = async (onStart = () => { }) => {
+const startServer = async (onStart = () => {}) => {
   const app = await setup();
   app.listen(port, () => {
     onStart();
@@ -20,12 +20,12 @@ if (clusterWorkerSize > 1) {
       cluster.fork();
     }
 
-    cluster.on('exit', (worker) => {
-      logger.debug('Worker', worker.id, ' has exitted.');
+    cluster.on("exit", (worker: any) => {
+      logger.debug("Worker", worker.id, " has exitted.");
     });
   } else {
     startServer(() => {
-      logger.debug('Express server listening in cluster mode', {
+      logger.debug("Express server listening in cluster mode", {
         pid: process.pid,
         port,
       });
@@ -33,7 +33,7 @@ if (clusterWorkerSize > 1) {
   }
 } else {
   startServer(() => {
-    logger.debug('Express server listening with the single worker', {
+    logger.debug("Express server listening with the single worker", {
       pid: process.pid,
       port,
     });
