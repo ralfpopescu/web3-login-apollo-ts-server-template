@@ -21,6 +21,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "ethers": "^5.5.1",
     "express": "^4.17.1",
     "graphql": "^15.5.0",
     "graphql-compose-mongoose": "^9.3.1",
