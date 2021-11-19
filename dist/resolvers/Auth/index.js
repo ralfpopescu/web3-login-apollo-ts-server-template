@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40,67 +59,68 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var config_1 = require("../../config");
-var salt = bcryptjs_1.default.genSaltSync(10);
+var ethers = __importStar(require("ethers"));
+var utils_1 = require("../../services/utils");
 var validateUser = function (_a) {
-    var email = _a.email, password = _a.password, Model = _a.Model;
-    return __awaiter(void 0, void 0, void 0, function () {
-        var user, hashedPassword, id, result;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, Model.User.findOne({ email: email }).exec()];
-                case 1:
-                    user = _b.sent();
-                    if (!user) {
-                        throw new Error("User with email does not exist.");
-                    }
-                    hashedPassword = user.hashedPassword, id = user.id;
-                    result = bcryptjs_1.default.compareSync(password, hashedPassword);
-                    if (result) {
-                        return [2 /*return*/, id];
-                    }
-                    throw new Error("Login failed");
-            }
-        });
-    });
+    var nonce = _a.nonce, userSignedNonce = _a.userSignedNonce, appSignedNonce = _a.appSignedNonce, publicAddress = _a.publicAddress;
+    console.log({ nonce: nonce, userSignedNonce: userSignedNonce, appSignedNonce: appSignedNonce });
+    var recoveredUserAddress = ethers.utils.verifyMessage(nonce, userSignedNonce);
+    console.log({ recoveredUserAddress: recoveredUserAddress });
+    var recoveredAppAddress = ethers.utils.verifyMessage(nonce, appSignedNonce);
+    console.log({ recoveredAppAddress: recoveredAppAddress });
+    return recoveredUserAddress === publicAddress && recoveredAppAddress === config_1.config.PUBLIC_KEY;
 };
 var Mutation = {
     login: function (_, _a, _b) {
-        var _c = _a.input, email = _c.email, password = _c.password;
+        var _c = _a.input, nonce = _c.nonce, userSignedNonce = _c.userSignedNonce, appSignedNonce = _c.appSignedNonce, publicAddress = _c.publicAddress;
         var Model = _b.Model;
         return __awaiter(void 0, void 0, void 0, function () {
-            var id, accessToken;
+            var validated, user, accessToken, newUser, accessToken;
             return __generator(this, function (_d) {
                 switch (_d.label) {
-                    case 0: return [4 /*yield*/, validateUser({ email: email, password: password, Model: Model })];
+                    case 0: return [4 /*yield*/, validateUser({
+                            nonce: nonce,
+                            userSignedNonce: userSignedNonce,
+                            appSignedNonce: appSignedNonce,
+                            publicAddress: publicAddress,
+                        })];
                     case 1:
-                        id = _d.sent();
-                        if (id) {
-                            accessToken = jsonwebtoken_1.default.sign({ email: email, id: id }, config_1.config.ACCESS_TOKEN_SECRET);
-                            return [2 /*return*/, { accessToken: accessToken }];
-                        }
-                        return [2 /*return*/];
-                }
-            });
-        });
-    },
-    signup: function (_, _a, _b) {
-        var _c = _a.input, email = _c.email, password = _c.password;
-        var Model = _b.Model;
-        return __awaiter(void 0, void 0, void 0, function () {
-            var hashedPassword, user;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
-                    case 0:
-                        hashedPassword = bcryptjs_1.default.hashSync(password, salt);
-                        return [4 /*yield*/, Model.User.create({ email: email, hashedPassword: hashedPassword })];
-                    case 1:
+                        validated = _d.sent();
+                        if (!validated) return [3 /*break*/, 5];
+                        return [4 /*yield*/, Model.User.findOne({
+                                publicAddress: publicAddress,
+                            }).exec()];
+                    case 2:
                         user = _d.sent();
-                        return [2 /*return*/, user];
+                        if (!user) return [3 /*break*/, 3];
+                        accessToken = jsonwebtoken_1.default.sign({ publicAddress: publicAddress, id: user.id }, config_1.config.ACCESS_TOKEN_SECRET);
+                        return [2 /*return*/, { accessToken: accessToken, isNew: false }];
+                    case 3: return [4 /*yield*/, Model.User.create({ publicAddress: publicAddress })];
+                    case 4:
+                        newUser = _d.sent();
+                        accessToken = jsonwebtoken_1.default.sign({ publicAddress: publicAddress, id: newUser.id }, config_1.config.ACCESS_TOKEN_SECRET);
+                        return [2 /*return*/, { accessToken: accessToken, isNew: true }];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
     },
 };
-module.exports = { Mutation: Mutation };
+var Query = {
+    getNonce: function () { return __awaiter(void 0, void 0, void 0, function () {
+        var nonce, wallet, appSignedNonce;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    nonce = (0, utils_1.generateNonce)(12);
+                    wallet = new ethers.Wallet(config_1.config.PRIVATE_KEY);
+                    return [4 /*yield*/, wallet.signMessage(nonce)];
+                case 1:
+                    appSignedNonce = _a.sent();
+                    return [2 /*return*/, { nonce: nonce, appSignedNonce: appSignedNonce }];
+            }
+        });
+    }); },
+};
+module.exports = { Mutation: Mutation, Query: Query };

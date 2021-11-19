@@ -1,12 +1,16 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var timestamps = require('mongoose-timestamp');
+var mongoose_1 = __importDefault(require("mongoose"));
+var Schema = mongoose_1.default.Schema;
+//@ts-ignore
+var mongoose_timestamp_1 = __importDefault(require("mongoose-timestamp"));
 var UserSchema = new Schema({
     id: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose_1.default.Schema.Types.ObjectId,
         index: true,
         required: true,
         auto: true,
@@ -18,13 +22,21 @@ var UserSchema = new Schema({
         unique: true,
         required: true,
     },
-    hashedPassword: {
+    publicAddress: {
+        type: String,
+        required: true,
+    },
+    nonce: {
+        type: String,
+        required: true,
+    },
+    audiusUserId: {
         type: String,
         required: true,
     },
 }, {
-    collection: 'users',
+    collection: "users",
 });
-UserSchema.plugin(timestamps);
+UserSchema.plugin(mongoose_timestamp_1.default);
 UserSchema.index({ createdAt: 1, updatedAt: 1 });
-exports.User = mongoose.model('User', UserSchema);
+exports.User = mongoose_1.default.model("User", UserSchema);

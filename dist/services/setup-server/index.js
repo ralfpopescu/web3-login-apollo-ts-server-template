@@ -46,7 +46,7 @@ var path = require("path");
 var uuidv4 = require("uuid").v4;
 var concatFiles = require("../fs").concatFiles;
 var resolvers = require("../../resolvers");
-var logger = require("../logger");
+var logger = require("../logger").logger;
 var QueryLogger = require("../query-logger").QueryLogger;
 var processAuth = require("./process-auth");
 var Model = require("../../db");
@@ -73,7 +73,7 @@ var setupServer = function () { return __awaiter(void 0, void 0, void 0, functio
                             return __generator(this, function (_b) {
                                 switch (_b.label) {
                                     case 0:
-                                        auth = req.headers.get("Authorization") || null;
+                                        auth = req.headers["authorization"] || null;
                                         return [4 /*yield*/, processAuth(auth)];
                                     case 1:
                                         authenticatedUser = _b.sent();

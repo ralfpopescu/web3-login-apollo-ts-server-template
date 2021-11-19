@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import {Context} from "../../types";
-import {config} from "../../config";
+import { Context } from "../../types";
+import { config } from "../../config";
 import * as ethers from "ethers";
-import {generateNonce} from "../../services/utils";
+import { generateNonce } from "../../services/utils";
 
 type LoginArgs = {
   input: {
@@ -19,27 +19,19 @@ const validateUser = ({
   appSignedNonce,
   publicAddress,
 }: LoginArgs["input"]) => {
-  const recoveredUserAddress = ethers.utils.recoverAddress(
-    nonce,
-    userSignedNonce
-  );
-  const recoveredAppAddress = ethers.utils.recoverAddress(
-    nonce,
-    appSignedNonce
-  );
-  return (
-    recoveredUserAddress === publicAddress &&
-    recoveredAppAddress === config.PUBLIC_KEY
-  );
+  console.log({ nonce, userSignedNonce, appSignedNonce });
+  const recoveredUserAddress = ethers.utils.verifyMessage(nonce, userSignedNonce);
+  console.log({ recoveredUserAddress });
+  const recoveredAppAddress = ethers.utils.verifyMessage(nonce, appSignedNonce);
+  console.log({ recoveredAppAddress });
+  return recoveredUserAddress === publicAddress && recoveredAppAddress === config.PUBLIC_KEY;
 };
-
-type GetNonceArgs = {input: {publicAddress: string}};
 
 const Mutation = {
   login: async (
     _: object,
-    {input: {nonce, userSignedNonce, appSignedNonce, publicAddress}}: LoginArgs,
-    {Model}: Context
+    { input: { nonce, userSignedNonce, appSignedNonce, publicAddress } }: LoginArgs,
+    { Model }: Context
   ) => {
     const validated = await validateUser({
       nonce,
@@ -52,31 +44,24 @@ const Mutation = {
         publicAddress,
       }).exec();
       if (user) {
-        const accessToken = jwt.sign(
-          {publicAddress, id: user.id},
-          config.ACCESS_TOKEN_SECRET
-        );
-        return {accessToken, isNew: false};
+        const accessToken = jwt.sign({ publicAddress, id: user.id }, config.ACCESS_TOKEN_SECRET);
+        return { accessToken, isNew: false };
       } else {
-        const newUser = await Model.User.create({publicAddress});
-        const accessToken = jwt.sign(
-          {publicAddress, id: newUser.id},
-          config.ACCESS_TOKEN_SECRET
-        );
-        return {accessToken, isNew: true};
+        const newUser = await Model.User.create({ publicAddress });
+        const accessToken = jwt.sign({ publicAddress, id: newUser.id }, config.ACCESS_TOKEN_SECRET);
+        return { accessToken, isNew: true };
       }
     }
   },
-  getNonce: async (
-    _: object,
-    {input: {publicAddress}}: GetNonceArgs,
-    {Model}: Context
-  ) => {
+};
+
+const Query = {
+  getNonce: async () => {
     const nonce = generateNonce(12);
     const wallet = new ethers.Wallet(config.PRIVATE_KEY);
-    const appSignedNonce = wallet.signMessage(nonce);
-    return {nonce, appSignedNonce};
+    const appSignedNonce = await wallet.signMessage(nonce);
+    return { nonce, appSignedNonce };
   },
 };
 
-module.exports = {Mutation};
+module.exports = { Mutation, Query };

@@ -7,7 +7,7 @@ input LoginInput {
 
 type LoginResponse {
   accessToken: String!
-  isNew: boolean!
+  isNew: Boolean!
 }
 
 type GetNonceResponse {
@@ -16,6 +16,9 @@ type GetNonceResponse {
 }
 
 extend type Mutation {
-  login(input: LoginInput!): LoginResponse
+  login(input: LoginInput!): LoginResponse!
+}
+
+extend type Query {
   getNonce: GetNonceResponse!
 }

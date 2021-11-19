@@ -1,18 +1,24 @@
 input LoginInput {
-  email: String!
-  password: String!
-}
-
-input SignupInput {
-  email: String!
-  password: String!
+  nonce: String!
+  userSignedNonce: String!
+  appSignedNonce: String!
+  publicAddress: String!
 }
 
 type LoginResponse {
   accessToken: String!
+  isNew: Boolean!
+}
+
+type GetNonceResponse {
+  appSignedNonce: String!
+  nonce: String!
 }
 
 extend type Mutation {
-  login(input: LoginInput!): LoginResponse
-  signup(input: SignupInput!): User
+  login(input: LoginInput!): LoginResponse!
+}
+
+extend type Query {
+  getNonce: GetNonceResponse!
 }
